@@ -1,9 +1,9 @@
 window.SITE_CONFIG = {
-  siteName: "WINNER MEMBER",
-  tagline: "Galeri Bukti Kemenangan Member",
-  logoUrl: "https://placehold.co/360x100/111111/D4AF37?text=YOUR+LOGO",
-  faviconUrl: "https://placehold.co/64x64/111111/D4AF37?text=W",
-  backgroundUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1920&q=80",
+  siteName: "TOTOSLOTJP",
+  tagline: "Galeri Bukti Kemenangan Member Totoslotjp",
+  logoUrl: "https://ik.imagekit.io/jpgrup/TTS/logo-tsj.png?updatedAt=1783369859269",
+  faviconUrl: "https://ik.imagekit.io/jpgrup/TTS/fav-tsj.png?updatedAt=1783369882506",
+  backgroundUrl: "https://ik.imagekit.io/jpgrup/TTS/49a90a56-d309-4b17-a062-2c0723534140.png",
   currencyPrefix: "Rp",
   postsPerPage: 12
 };
