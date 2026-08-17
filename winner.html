@@ -1,23 +1,519 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Detail Kemenangan</title></head><body class="public-page">
-<header class="header"><div class="container header-inner"><a href="/"><img class="logo" data-logo alt="Logo"></a><nav class="nav"><a class="nav-link active" href="/">← Kembali</a></nav></div></header>
-<main class="container"><article id="detail" class="detail"><div class="empty">Memuat...</div></article></main>
-<div id="lightbox" class="lightbox"><img id="lightboxImg" alt="Preview"></div>
-<script src="/config.js"></script><script src="/assets/js/site.js"></script><script>
-const slug=decodeURIComponent(location.pathname.split("/winner/")[1]?.split("/")[0]||"");
-const box=document.getElementById("detail");
-async function run(){
- const r=await fetch("/api/posts/"+encodeURIComponent(slug)); if(!r.ok){box.innerHTML='<div class="empty">Posting tidak ditemukan.</div>';return}
- const p=await r.json();document.title=p.title+" - "+CFG.siteName;
- const win=(p.media||[]).filter(x=>x.media_type==="win_proof"), transfer=(p.media||[]).filter(x=>x.media_type==="transfer_proof");
- const gallery=(arr)=>arr.map(m=>`<img src="${esc(m.image_url)}" alt="Bukti" loading="lazy" onclick="openImg(this.src)">`).join("");
- box.innerHTML=`${p.banner_url?`<img class="detail-banner" src="${esc(p.banner_url)}" alt="${esc(p.title)}">`:""}
- <div class="detail-box"><div class="badges">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div><h1>${esc(p.title)}</h1>
- <div class="meta"><span>Member: ${esc(p.username)}</span><span>Game: ${esc(p.game||"-")}</span><span>${dateFmt(p.published_at||p.created_at)}</span></div>
- <div class="amount">${money(p.amount)}</div><p>${esc(p.description||"").replace(/\n/g,"<br>")}</p></div>
- ${win.length?`<h2 class="section-title">Bukti Kemenangan</h2><div class="gallery">${gallery(win)}</div>`:""}
- ${transfer.length?`<h2 class="section-title">Bukti Transfer</h2><div class="gallery">${gallery(transfer)}</div>`:""}`;
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070707">
+  <link rel="icon" href="">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <title>Detail Kemenangan</title>
+</head>
+
+<body class="public-page detail-page">
+
+<header class="header">
+  <div class="container header-inner">
+
+    <a href="/" class="brand">
+      <img class="logo" data-logo alt="Logo">
+    </a>
+
+    <nav class="nav">
+
+      <a
+        class="header-rtp-btn"
+        href="https://cutt.ly/rtp-totoslotjp"
+        target="_blank"
+        rel="noopener noreferrer">
+        RTP SLOT GACOR HARI INI
+      </a>
+
+      <a class="btn secondary" href="/">
+        ← KEMBALI
+      </a>
+
+    </nav>
+
+  </div>
+</header>
+
+
+<main class="container">
+
+  <article id="detail" class="detail-shell">
+
+    <div class="detail-loading">
+      <div class="detail-loading-line"></div>
+      <div class="detail-loading-line short"></div>
+    </div>
+
+  </article>
+
+</main>
+
+
+<div id="lightbox" class="lightbox">
+
+  <button
+    class="lightbox-close"
+    aria-label="Tutup">
+    ×
+  </button>
+
+  <img
+    id="lightboxImg"
+    alt="Preview">
+
+</div>
+
+
+<script src="/config.js"></script>
+<script src="/assets/js/site.js"></script>
+
+<script>
+
+const box =
+  document.getElementById("detail");
+
+const pathParts =
+  location.pathname
+    .split("/")
+    .filter(Boolean);
+
+const slugIndex =
+  pathParts.indexOf("winner");
+
+const slug =
+  slugIndex >= 0
+    ? decodeURIComponent(
+        pathParts[slugIndex + 1] || ""
+      )
+    : "";
+
+
+if (!slug) {
+  location.replace("/");
 }
-function openImg(src){document.getElementById("lightboxImg").src=src;document.getElementById("lightbox").classList.add("open")}
-document.getElementById("lightbox").onclick=e=>e.currentTarget.classList.remove("open"); run();
-</script></body></html>
+
+
+function proofGallery(
+  items,
+  title,
+  subtitle
+) {
+
+  if (!items.length) {
+    return "";
+  }
+
+  return `
+
+    <section class="proof-section">
+
+      <div class="proof-section-head">
+
+        <div>
+
+          <span class="proof-kicker">
+            ${esc(subtitle)}
+          </span>
+
+          <h2>
+            ${esc(title)}
+          </h2>
+
+        </div>
+
+        <span class="proof-count">
+          ${items.length} Bukti
+        </span>
+
+      </div>
+
+
+      <div class="proof-grid">
+
+        ${items.map((m, i) => `
+
+          <button
+            class="proof-card"
+            type="button"
+            onclick="openImg('${esc(m.image_url)}')">
+
+            <img
+              src="${esc(m.image_url)}"
+              alt="${esc(title)} ${i + 1}"
+              loading="lazy">
+
+            <span class="proof-zoom">
+              LIHAT UKURAN PENUH ↗
+            </span>
+
+          </button>
+
+        `).join("")}
+
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+async function run() {
+
+  try {
+
+    const r =
+      await fetch(
+        "/api/posts/" +
+        encodeURIComponent(slug)
+      );
+
+
+    if (!r.ok) {
+
+      box.innerHTML = `
+
+        <div class="detail-error">
+
+          <span class="detail-error-code">
+            404
+          </span>
+
+          <h1>
+            Posting kemenangan tidak ditemukan
+          </h1>
+
+          <p>
+            Posting mungkin sudah dihapus
+            atau URL tidak valid.
+          </p>
+
+          <a
+            class="btn"
+            href="/">
+            Kembali ke Galeri
+          </a>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    const p =
+      await r.json();
+
+
+    document.title =
+      p.title +
+      " - " +
+      CFG.siteName;
+
+
+    const win =
+      (p.media || [])
+        .filter(
+          x =>
+            x.media_type ===
+            "win_proof"
+        );
+
+
+    const transfer =
+      (p.media || [])
+        .filter(
+          x =>
+            x.media_type ===
+            "transfer_proof"
+        );
+
+
+    const date =
+      dateFmt(
+        p.published_at ||
+        p.created_at
+      );
+
+
+    box.innerHTML = `
+
+      <section class="detail-hero-card">
+
+
+        ${
+          p.banner_url
+          ? `
+
+            <div class="detail-banner-wrap">
+
+              <img
+                class="detail-banner"
+                src="${esc(p.banner_url)}"
+                alt="${esc(p.title)}">
+
+              <div
+                class="detail-banner-shade">
+              </div>
+
+            </div>
+
+          `
+          : ""
+        }
+
+
+        <div class="detail-content">
+
+
+          <div class="detail-topline">
+
+
+            <a
+              href="https://cutt.ly/rtp-totoslotjp"
+              class="winner-rtp-btn"
+              target="_blank"
+              rel="noopener noreferrer">
+
+              ⚡ RTP SLOT GACOR HARI INI
+
+            </a>
+
+
+            <span class="detail-date">
+              ${date}
+            </span>
+
+
+          </div>
+
+
+          <h1>
+            ${esc(p.title)}
+          </h1>
+
+
+          <div class="detail-summary-grid">
+
+
+            <div class="summary-box">
+
+              <span>
+                MEMBER
+              </span>
+
+              <strong>
+                ${esc(
+                  p.username ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-box">
+
+              <span>
+                GAME / PROVIDER
+              </span>
+
+              <strong>
+                ${esc(
+                  p.game ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-box amount-box">
+
+              <span>
+                TOTAL KEMENANGAN
+              </span>
+
+              <strong>
+                ${money(p.amount)}
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          ${
+            p.description
+            ? `
+
+              <div class="detail-description">
+
+                <span class="detail-description-label">
+                  DETAIL KEMENANGAN
+                </span>
+
+                <p>
+                  ${
+                    esc(p.description)
+                      .replace(/\n/g, "<br>")
+                  }
+                </p>
+
+              </div>
+
+            `
+            : ""
+          }
+
+
+        </div>
+
+      </section>
+
+
+      ${
+        proofGallery(
+          win,
+          "Bukti Kemenangan",
+          "SCREENSHOT KEMENANGAN"
+        )
+      }
+
+
+      ${
+        proofGallery(
+          transfer,
+          "Bukti Transfer",
+          "PEMBAYARAN MEMBER"
+        )
+      }
+
+
+      <div class="detail-bottom-action">
+
+        <a
+          class="btn secondary"
+          href="/">
+
+          ← Kembali ke Semua Kemenangan
+
+        </a>
+
+      </div>
+
+    `;
+
+
+  } catch (e) {
+
+
+    box.innerHTML = `
+
+      <div class="detail-error">
+
+        <span class="detail-error-code">
+          !
+        </span>
+
+        <h1>
+          Gagal memuat detail kemenangan
+        </h1>
+
+        <p>
+          Silakan refresh halaman
+          atau kembali ke galeri.
+        </p>
+
+        <a
+          class="btn"
+          href="/">
+          Kembali ke Galeri
+        </a>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+function openImg(src) {
+
+  document
+    .getElementById("lightboxImg")
+    .src = src;
+
+  document
+    .getElementById("lightbox")
+    .classList
+    .add("open");
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeLightbox() {
+
+  document
+    .getElementById("lightbox")
+    .classList
+    .remove("open");
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+document
+  .getElementById("lightbox")
+  .addEventListener(
+    "click",
+    e => {
+
+      if (
+        e.target.id === "lightbox" ||
+        e.target
+          .classList
+          .contains("lightbox-close")
+      ) {
+
+        closeLightbox();
+
+      }
+
+    }
+  );
+
+
+document
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if (e.key === "Escape") {
+        closeLightbox();
+      }
+
+    }
+  );
+
+
+run();
+
+</script>
+
+</body>
+</html>
