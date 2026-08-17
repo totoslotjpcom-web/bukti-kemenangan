@@ -3,517 +3,83 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#070707">
-  <link rel="icon" href="">
-  <link rel="stylesheet" href="/assets/css/style.css">
   <title>Detail Kemenangan</title>
+  <link rel="icon" href="" data-favicon>
+  <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-
-<body class="public-page detail-page">
-
+<body>
 <header class="header">
   <div class="container header-inner">
-
-    <a href="/" class="brand">
-      <img class="logo" data-logo alt="Logo">
-    </a>
-
+    <a href="/"><img class="logo" data-logo alt="Logo"></a>
     <nav class="nav">
-
-      <a
-        class="header-rtp-btn"
-        href="https://cutt.ly/rtp-totoslotjp"
-        target="_blank"
-        rel="noopener noreferrer">
-        RTP SLOT GACOR HARI INI
-      </a>
-
-      <a class="btn secondary" href="/">
-        ← KEMBALI
-      </a>
-
+      <a class="btn secondary" href="/">← Kembali</a>
+      <a class="btn" href="https://cutt.ly/rtp-totoslotjp" target="_blank" rel="noopener">RTP SLOT GACOR HARI INI</a>
     </nav>
-
   </div>
 </header>
 
-
-<main class="container">
-
-  <article id="detail" class="detail-shell">
-
-    <div class="detail-loading">
-      <div class="detail-loading-line"></div>
-      <div class="detail-loading-line short"></div>
+<main class="container detail-wrap">
+  <div id="loading" class="empty">Memuat detail kemenangan...</div>
+  <article id="detail" class="detail-card hidden">
+    <div class="detail-image-wrap">
+      <img id="banner" class="detail-image" alt="Bukti kemenangan">
     </div>
-
+    <div class="detail-content">
+      <div class="eyebrow">BUKTI KEMENANGAN MEMBER</div>
+      <h1 id="title" class="detail-title"></h1>
+      <div class="detail-amount-label">KEMENANGAN TOTAL</div>
+      <div id="amount" class="detail-amount"></div>
+      <div class="detail-info">
+        <div><span>Member</span><strong id="username"></strong></div>
+        <div><span>Game</span><strong id="game"></strong></div>
+        <div><span>Tanggal</span><strong id="date"></strong></div>
+      </div>
+      <div id="content" class="post-content"></div>
+    </div>
   </article>
-
+  <div id="error" class="empty hidden"></div>
 </main>
 
-
-<div id="lightbox" class="lightbox">
-
-  <button
-    class="lightbox-close"
-    aria-label="Tutup">
-    ×
-  </button>
-
-  <img
-    id="lightboxImg"
-    alt="Preview">
-
-</div>
-
+<footer class="footer"><div class="container">© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div></footer>
 
 <script src="/config.js"></script>
-<script src="/assets/js/site.js"></script>
-
 <script>
+const CFG=window.SITE_CONFIG||{};
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const money=n=>(CFG.currencyPrefix||"Rp")+" "+Number(n||0).toLocaleString("id-ID");
+const fmt=d=>d?new Date(d).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"}):"-";
+document.getElementById("year").textContent=new Date().getFullYear();
+document.querySelectorAll("[data-site-name]").forEach(x=>x.textContent=CFG.siteName||"WINNER MEMBER");
+document.querySelectorAll("[data-logo]").forEach(x=>{if(CFG.logoUrl)x.src=CFG.logoUrl;else x.style.display="none"});
+document.querySelectorAll("[data-favicon]").forEach(x=>{if(CFG.faviconUrl)x.href=CFG.faviconUrl});
+if(CFG.backgroundUrl)document.documentElement.style.setProperty("--site-bg",`url("${CFG.backgroundUrl}")`);
 
-const box =
-  document.getElementById("detail");
-
-const pathParts =
-  location.pathname
-    .split("/")
-    .filter(Boolean);
-
-const slugIndex =
-  pathParts.indexOf("winner");
-
-const slug =
-  slugIndex >= 0
-    ? decodeURIComponent(
-        pathParts[slugIndex + 1] || ""
-      )
-    : "";
-
-
-if (!slug) {
-  location.replace("/");
+async function init(){
+ const slug=new URLSearchParams(location.search).get("slug");
+ const loading=document.getElementById("loading"), detail=document.getElementById("detail"), error=document.getElementById("error");
+ if(!slug){loading.classList.add("hidden");error.textContent="Postingan tidak ditemukan.";error.classList.remove("hidden");return;}
+ try{
+   const r=await fetch("/api/posts/"+encodeURIComponent(slug),{cache:"no-store"});
+   if(!r.ok)throw new Error("not found");
+   const raw=await r.json();
+   const p=raw.post||raw;
+   document.title=(p.title||"Detail Kemenangan")+" - "+(CFG.siteName||"");
+   const img=p.banner_url||p.image_url||"";
+   const banner=document.getElementById("banner");
+   if(img)banner.src=img;else banner.closest(".detail-image-wrap").style.display="none";
+   document.getElementById("title").textContent=p.title||"Bukti Kemenangan";
+   document.getElementById("amount").textContent=money(p.amount);
+   document.getElementById("username").textContent=p.username||"-";
+   document.getElementById("game").textContent=p.game||"-";
+   document.getElementById("date").textContent=fmt(p.published_at||p.created_at);
+   const content=p.content||p.description||p.body||"";
+   document.getElementById("content").innerHTML=content ? `<p>${esc(content).replace(/\n/g,"<br>")}</p>` : "";
+   loading.classList.add("hidden");detail.classList.remove("hidden");
+ }catch(e){
+   loading.classList.add("hidden");error.textContent="Detail postingan tidak ditemukan atau API belum mengembalikan data.";error.classList.remove("hidden");
+ }
 }
-
-
-function proofGallery(
-  items,
-  title,
-  subtitle
-) {
-
-  if (!items.length) {
-    return "";
-  }
-
-  return `
-
-    <section class="proof-section">
-
-      <div class="proof-section-head">
-
-        <div>
-
-          <span class="proof-kicker">
-            ${esc(subtitle)}
-          </span>
-
-          <h2>
-            ${esc(title)}
-          </h2>
-
-        </div>
-
-        <span class="proof-count">
-          ${items.length} Bukti
-        </span>
-
-      </div>
-
-
-      <div class="proof-grid">
-
-        ${items.map((m, i) => `
-
-          <button
-            class="proof-card"
-            type="button"
-            onclick="openImg('${esc(m.image_url)}')">
-
-            <img
-              src="${esc(m.image_url)}"
-              alt="${esc(title)} ${i + 1}"
-              loading="lazy">
-
-            <span class="proof-zoom">
-              LIHAT UKURAN PENUH ↗
-            </span>
-
-          </button>
-
-        `).join("")}
-
-      </div>
-
-    </section>
-
-  `;
-
-}
-
-
-async function run() {
-
-  try {
-
-    const r =
-      await fetch(
-        "/api/posts/" +
-        encodeURIComponent(slug)
-      );
-
-
-    if (!r.ok) {
-
-      box.innerHTML = `
-
-        <div class="detail-error">
-
-          <span class="detail-error-code">
-            404
-          </span>
-
-          <h1>
-            Posting kemenangan tidak ditemukan
-          </h1>
-
-          <p>
-            Posting mungkin sudah dihapus
-            atau URL tidak valid.
-          </p>
-
-          <a
-            class="btn"
-            href="/">
-            Kembali ke Galeri
-          </a>
-
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
-    const p =
-      await r.json();
-
-
-    document.title =
-      p.title +
-      " - " +
-      CFG.siteName;
-
-
-    const win =
-      (p.media || [])
-        .filter(
-          x =>
-            x.media_type ===
-            "win_proof"
-        );
-
-
-    const transfer =
-      (p.media || [])
-        .filter(
-          x =>
-            x.media_type ===
-            "transfer_proof"
-        );
-
-
-    const date =
-      dateFmt(
-        p.published_at ||
-        p.created_at
-      );
-
-
-    box.innerHTML = `
-
-      <section class="detail-hero-card">
-
-
-        ${
-          p.banner_url
-          ? `
-
-            <div class="detail-banner-wrap">
-
-              <img
-                class="detail-banner"
-                src="${esc(p.banner_url)}"
-                alt="${esc(p.title)}">
-
-              <div
-                class="detail-banner-shade">
-              </div>
-
-            </div>
-
-          `
-          : ""
-        }
-
-
-        <div class="detail-content">
-
-
-          <div class="detail-topline">
-
-
-            <a
-              href="https://cutt.ly/rtp-totoslotjp"
-              class="winner-rtp-btn"
-              target="_blank"
-              rel="noopener noreferrer">
-
-              ⚡ RTP SLOT GACOR HARI INI
-
-            </a>
-
-
-            <span class="detail-date">
-              ${date}
-            </span>
-
-
-          </div>
-
-
-          <h1>
-            ${esc(p.title)}
-          </h1>
-
-
-          <div class="detail-summary-grid">
-
-
-            <div class="summary-box">
-
-              <span>
-                MEMBER
-              </span>
-
-              <strong>
-                ${esc(
-                  p.username ||
-                  "-"
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="summary-box">
-
-              <span>
-                GAME / PROVIDER
-              </span>
-
-              <strong>
-                ${esc(
-                  p.game ||
-                  "-"
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="summary-box amount-box">
-
-              <span>
-                TOTAL KEMENANGAN
-              </span>
-
-              <strong>
-                ${money(p.amount)}
-              </strong>
-
-            </div>
-
-
-          </div>
-
-
-          ${
-            p.description
-            ? `
-
-              <div class="detail-description">
-
-                <span class="detail-description-label">
-                  DETAIL KEMENANGAN
-                </span>
-
-                <p>
-                  ${
-                    esc(p.description)
-                      .replace(/\n/g, "<br>")
-                  }
-                </p>
-
-              </div>
-
-            `
-            : ""
-          }
-
-
-        </div>
-
-      </section>
-
-
-      ${
-        proofGallery(
-          win,
-          "Bukti Kemenangan",
-          "SCREENSHOT KEMENANGAN"
-        )
-      }
-
-
-      ${
-        proofGallery(
-          transfer,
-          "Bukti Transfer",
-          "PEMBAYARAN MEMBER"
-        )
-      }
-
-
-      <div class="detail-bottom-action">
-
-        <a
-          class="btn secondary"
-          href="/">
-
-          ← Kembali ke Semua Kemenangan
-
-        </a>
-
-      </div>
-
-    `;
-
-
-  } catch (e) {
-
-
-    box.innerHTML = `
-
-      <div class="detail-error">
-
-        <span class="detail-error-code">
-          !
-        </span>
-
-        <h1>
-          Gagal memuat detail kemenangan
-        </h1>
-
-        <p>
-          Silakan refresh halaman
-          atau kembali ke galeri.
-        </p>
-
-        <a
-          class="btn"
-          href="/">
-          Kembali ke Galeri
-        </a>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-function openImg(src) {
-
-  document
-    .getElementById("lightboxImg")
-    .src = src;
-
-  document
-    .getElementById("lightbox")
-    .classList
-    .add("open");
-
-  document.body.style.overflow =
-    "hidden";
-
-}
-
-
-function closeLightbox() {
-
-  document
-    .getElementById("lightbox")
-    .classList
-    .remove("open");
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-document
-  .getElementById("lightbox")
-  .addEventListener(
-    "click",
-    e => {
-
-      if (
-        e.target.id === "lightbox" ||
-        e.target
-          .classList
-          .contains("lightbox-close")
-      ) {
-
-        closeLightbox();
-
-      }
-
-    }
-  );
-
-
-document
-  .addEventListener(
-    "keydown",
-    e => {
-
-      if (e.key === "Escape") {
-        closeLightbox();
-      }
-
-    }
-  );
-
-
-run();
-
+init();
 </script>
-
 </body>
 </html>
