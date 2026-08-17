@@ -1,0 +1,28 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Admin Panel</title></head><body>
+<div id="loginView" class="login-wrap"><form id="loginForm" class="login-card"><img class="logo" data-logo alt="Logo"><h1>Admin Login</h1><p style="color:#999">Masuk menggunakan ID dan password admin.</p>
+<div class="field"><label>ID Admin</label><input class="input" id="loginId" required autocomplete="username"></div><br>
+<div class="field"><label>Password</label><input class="input" id="loginPass" type="password" required autocomplete="current-password"></div>
+<div id="loginNotice" class="notice"></div><br><button class="btn" style="width:100%">MASUK DASHBOARD</button></form></div>
+<div id="adminView" class="admin-layout hidden">
+<aside class="sidebar"><img class="side-logo" data-logo alt="Logo"><div class="side-nav"><button class="active" data-tab="dashboard">Dashboard</button><button data-tab="posts">Posting</button><button data-tab="new">+ Tambah Post</button><a href="/" target="_blank">Lihat Website ↗</a><button id="logoutBtn">Logout</button></div></aside>
+<main class="admin-main">
+<div id="tab-dashboard"><div class="topbar"><div><h1>Dashboard</h1><div style="color:#888">Kelola bukti kemenangan member.</div></div><button class="btn" onclick="showTab('new')">+ POSTING BARU</button></div>
+<div class="stats"><div class="stat">Total Post<strong id="sTotal">0</strong></div><div class="stat">Published<strong id="sPub">0</strong></div><div class="stat">Draft<strong id="sDraft">0</strong></div><div class="stat">Total Media<strong id="sMedia">0</strong></div></div>
+<div class="panel"><h2>Posting Terbaru</h2><div id="recent"></div></div></div>
+<div id="tab-posts" class="hidden"><div class="topbar"><h1>Semua Posting</h1><button class="btn" onclick="showTab('new')">+ TAMBAH</button></div><div class="panel table-wrap"><table><thead><tr><th>Judul</th><th>Member</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody id="postsRows"></tbody></table></div></div>
+<div id="tab-new" class="hidden"><div class="topbar"><h1 id="formTitle">Tambah Postingan</h1></div><form id="postForm" class="panel"><input type="hidden" id="postId">
+<div class="form-grid"><div class="field full"><label>Judul Postingan *</label><input id="title" class="input" required></div>
+<div class="field"><label>Username Member *</label><input id="username" class="input" required placeholder="And****88"></div>
+<div class="field"><label>Nominal *</label><input id="amount" class="input" type="number" min="0" required></div>
+<div class="field"><label>Game / Provider</label><input id="game" class="input"></div>
+<div class="field"><label>Badge</label><select id="badgeF" class="select"><option value="">Tanpa Badge</option><option>MAXWIN</option><option>JACKPOT</option><option>WD PAID</option><option>NEW</option></select></div>
+<div class="field"><label>Status</label><select id="status" class="select"><option value="published">Publish</option><option value="draft">Draft</option></select></div>
+<div class="field"><label>Tanggal/Jam Publish</label><input id="publishedAt" class="input" type="datetime-local"></div>
+<div class="field full"><label>Deskripsi</label><textarea id="description" class="textarea" rows="5"></textarea></div>
+<div class="field full"><label>Banner Utama (1 gambar)</label><input id="banner" class="input" type="file" accept="image/*"><div id="bannerPreview" class="preview-list"></div></div>
+<div class="field full"><label>Bukti Kemenangan (boleh banyak)</label><input id="wins" class="input" type="file" accept="image/*" multiple><div id="winPreview" class="preview-list"></div></div>
+<div class="field full"><label>Bukti Transfer (boleh banyak)</label><input id="transfers" class="input" type="file" accept="image/*" multiple><div id="transferPreview" class="preview-list"></div></div></div>
+<div id="formNotice" class="notice"></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn" id="saveBtn">SIMPAN POSTINGAN</button><button type="button" class="btn secondary" onclick="resetForm()">RESET</button></div></form></div>
+</main></div>
+<script src="/config.js"></script><script src="/assets/js/site.js"></script><script src="/assets/js/admin.js"></script></body></html>

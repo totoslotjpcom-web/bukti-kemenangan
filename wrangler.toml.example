@@ -1,0 +1,12 @@
+name = "member-winner"
+compatibility_date = "2026-08-17"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "member-winner-db"
+database_id = "PASTE_D1_DATABASE_ID_HERE"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "member-winner-media"

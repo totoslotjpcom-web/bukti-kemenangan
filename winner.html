@@ -1,0 +1,23 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Detail Kemenangan</title></head><body>
+<header class="header"><div class="container header-inner"><a href="/"><img class="logo" data-logo alt="Logo"></a><nav class="nav"><a class="btn secondary" href="/">← Kembali</a></nav></div></header>
+<main class="container"><article id="detail" class="detail"><div class="empty">Memuat...</div></article></main>
+<div id="lightbox" class="lightbox"><img id="lightboxImg" alt="Preview"></div>
+<script src="/config.js"></script><script src="/assets/js/site.js"></script><script>
+const slug=decodeURIComponent(location.pathname.split("/winner/")[1]?.split("/")[0]||"");
+const box=document.getElementById("detail");
+async function run(){
+ const r=await fetch("/api/posts/"+encodeURIComponent(slug)); if(!r.ok){box.innerHTML='<div class="empty">Posting tidak ditemukan.</div>';return}
+ const p=await r.json();document.title=p.title+" - "+CFG.siteName;
+ const win=(p.media||[]).filter(x=>x.media_type==="win_proof"), transfer=(p.media||[]).filter(x=>x.media_type==="transfer_proof");
+ const gallery=(arr)=>arr.map(m=>`<img src="${esc(m.image_url)}" alt="Bukti" loading="lazy" onclick="openImg(this.src)">`).join("");
+ box.innerHTML=`${p.banner_url?`<img class="detail-banner" src="${esc(p.banner_url)}" alt="${esc(p.title)}">`:""}
+ <div class="detail-box"><div class="badges">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div><h1>${esc(p.title)}</h1>
+ <div class="meta"><span>Member: ${esc(p.username)}</span><span>Game: ${esc(p.game||"-")}</span><span>${dateFmt(p.published_at||p.created_at)}</span></div>
+ <div class="amount">${money(p.amount)}</div><p>${esc(p.description||"").replace(/\n/g,"<br>")}</p></div>
+ ${win.length?`<h2 class="section-title">Bukti Kemenangan</h2><div class="gallery">${gallery(win)}</div>`:""}
+ ${transfer.length?`<h2 class="section-title">Bukti Transfer</h2><div class="gallery">${gallery(transfer)}</div>`:""}`;
+}
+function openImg(src){document.getElementById("lightboxImg").src=src;document.getElementById("lightbox").classList.add("open")}
+document.getElementById("lightbox").onclick=e=>e.currentTarget.classList.remove("open"); run();
+</script></body></html>

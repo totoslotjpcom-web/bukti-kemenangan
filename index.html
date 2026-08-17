@@ -1,0 +1,25 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Winner Member</title></head><body>
+<header class="header"><div class="container header-inner"><img class="logo" data-logo alt="Logo"><nav class="nav"><a class="btn secondary" href="/">Beranda</a><a class="btn" href="#winners">Kemenangan Terbaru</a></nav></div></header>
+<main><section class="hero container"><h1 data-site-name></h1><p data-tagline></p></section>
+<section class="container" id="winners"><div class="toolbar"><input id="search" class="input" placeholder="Cari username, game, atau judul..."><select id="badge" class="select"><option value="">Semua Badge</option><option>MAXWIN</option><option>JACKPOT</option><option>WD PAID</option><option>NEW</option></select></div>
+<div id="grid" class="grid"></div><div id="empty" class="empty hidden">Belum ada posting kemenangan.</div><div id="pagination" class="pagination"></div></section></main>
+<footer class="footer"><div class="container">© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div></footer>
+<script src="/config.js"></script><script src="/assets/js/site.js"></script><script>
+let page=1, timer;
+document.getElementById("year").textContent=new Date().getFullYear();
+const grid=document.getElementById("grid"), empty=document.getElementById("empty"), pager=document.getElementById("pagination");
+async function load(){
+ const q=document.getElementById("search").value.trim(), badge=document.getElementById("badge").value;
+ const u=new URL("/api/posts",location.origin);u.searchParams.set("page",page);u.searchParams.set("limit",CFG.postsPerPage);if(q)u.searchParams.set("q",q);if(badge)u.searchParams.set("badge",badge);
+ const r=await fetch(u); const d=await r.json();
+ grid.innerHTML=(d.posts||[]).map(p=>`<a class="card" href="/winner/${encodeURIComponent(p.slug)}">
+ <img class="card-image" src="${esc(p.banner_url||'https://placehold.co/900x560/111/DBB95A?text=WINNER')}" alt="${esc(p.title)}" loading="lazy">
+ <div class="card-body"><div class="badges">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div><h3>${esc(p.title)}</h3><div class="meta"><span>${esc(p.username)}</span><span>${esc(p.game||"-")}</span><span>${dateFmt(p.published_at||p.created_at)}</span></div><div class="amount">${money(p.amount)}</div></div></a>`).join("");
+ empty.classList.toggle("hidden",(d.posts||[]).length>0);
+ const pages=Math.max(1,Math.ceil((d.total||0)/(d.limit||CFG.postsPerPage))); pager.innerHTML="";
+ if(pages>1){for(let i=1;i<=pages;i++){const b=document.createElement("button");b.className="btn small "+(i===page?"":"secondary");b.textContent=i;b.onclick=()=>{page=i;load();scrollTo({top:document.getElementById("winners").offsetTop-80,behavior:"smooth"})};pager.appendChild(b)}}
+}
+document.getElementById("search").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>{page=1;load()},300)});
+document.getElementById("badge").addEventListener("change",()=>{page=1;load()}); load();
+</script></body></html>
