@@ -5,7 +5,7 @@ const fav = document.querySelector('link[rel="icon"]'); if (fav) fav.href = CFG.
 document.querySelectorAll("[data-logo]").forEach(x=>x.src=CFG.logoUrl);
 document.querySelectorAll("[data-site-name]").forEach(x=>x.textContent=CFG.siteName);
 document.querySelectorAll("[data-tagline]").forEach(x=>x.textContent=CFG.tagline);
-
 const money = n => `${CFG.currencyPrefix} ${Number(n||0).toLocaleString("id-ID")}`;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 const dateFmt = s => s ? new Date(s).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"}) : "-";
+const badgeClass = s => String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-");

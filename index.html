@@ -1,25 +1,21 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Winner Member</title></head><body>
-<header class="header"><div class="container header-inner"><img class="logo" data-logo alt="Logo"><nav class="nav"><a class="btn secondary" href="/">Beranda</a><a class="btn" href="#winners">Kemenangan Terbaru</a></nav></div></header>
-<main><section class="hero container"><h1 data-site-name></h1><p data-tagline></p></section>
-<section class="container" id="winners"><div class="toolbar"><input id="search" class="input" placeholder="Cari username, game, atau judul..."><select id="badge" class="select"><option value="">Semua Badge</option><option>MAXWIN</option><option>JACKPOT</option><option>WD PAID</option><option>NEW</option></select></div>
-<div id="grid" class="grid"></div><div id="empty" class="empty hidden">Belum ada posting kemenangan.</div><div id="pagination" class="pagination"></div></section></main>
-<footer class="footer"><div class="container">© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div></footer>
+<link rel="icon" href=""><link rel="stylesheet" href="/assets/css/style.css"><title>Winner Member</title></head><body class="public-page">
+<header class="header"><div class="container header-inner"><a class="brand" href="/"><img class="logo" data-logo alt="Logo"></a><nav class="nav"><a class="nav-link active" href="/">BERANDA</a><a class="nav-link" href="#winners">KEMENANGAN TERBARU</a><span class="live-pill"><b>⚡ LIVE WINNER</b><small>UPDATE SETIAP HARI <i></i></small></span></nav></div></header>
+<main>
+<section class="hero"><div class="hero-art hero-art-left"></div><div class="hero-art hero-art-right"></div><div class="container hero-inner">
+<div class="eyebrow">GALERI RESMI MEMBER</div><h1>BUKTI <span>KEMENANGAN</span></h1><h2>MEMBER TOTOSLOTJP</h2>
+<div class="proof-strip"><span>100% KEMENANGAN ASLI</span><b>•</b><span>TANPA REKAYASA</span></div><p data-tagline></p>
+</div></section>
+<section class="container content-shell" id="winners">
+<div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="search" class="input" placeholder="Cari username, game, atau judul kemenangan..."></div><select id="badge" class="select"><option value="">Semua Badge</option><option>MAXWIN</option><option>JACKPOT</option><option>WD PAID</option><option>NEW</option></select></div>
+<div class="stats-ribbon"><div class="stat-public"><strong>🏆</strong><div><small>BUKTI TERBARU</small><b id="statTotal">0</b><span>Terpublikasi</span></div></div><div class="stat-public"><strong>✓</strong><div><small>STATUS</small><b>VERIFIED</b><span>Bukti member</span></div></div><div class="stat-public"><strong>JP</strong><div><small>PEMBAYARAN</small><b>TERBUKTI</b><span>Update harian</span></div></div><div class="stat-public"><strong>⚡</strong><div><small>GALERI</small><b>LIVE</b><span>24 / 7</span></div></div></div>
+<div class="section-heading"><span></span><h3>♛ GALERI KEMENANGAN TERBARU ♛</h3><span></span></div>
+<div id="grid" class="grid"></div><div id="empty" class="empty hidden"><b>BELUM ADA POSTING KEMENANGAN</b><span>Posting dari dashboard admin akan tampil otomatis di sini.</span></div><div id="pagination" class="pagination"></div>
+<div class="winner-cta"><div class="cta-icon">★</div><div><h3>JADILAH NEXT WINNER!</h3><p>Raih kemenangan besar Anda dan jadilah bagian dari galeri member TOTOSLOTJP.</p></div><a class="btn cta-btn" href="#winners">LIHAT KEMENANGAN <b>›</b></a></div>
+</section></main>
+<footer class="footer"><div class="container footer-inner"><img class="footer-logo" data-logo alt="Logo"><div>© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div><div class="footer-dots"><i></i><i></i><i></i></div></div></footer>
 <script src="/config.js"></script><script src="/assets/js/site.js"></script><script>
-let page=1, timer;
-document.getElementById("year").textContent=new Date().getFullYear();
-const grid=document.getElementById("grid"), empty=document.getElementById("empty"), pager=document.getElementById("pagination");
-async function load(){
- const q=document.getElementById("search").value.trim(), badge=document.getElementById("badge").value;
- const u=new URL("/api/posts",location.origin);u.searchParams.set("page",page);u.searchParams.set("limit",CFG.postsPerPage);if(q)u.searchParams.set("q",q);if(badge)u.searchParams.set("badge",badge);
- const r=await fetch(u); const d=await r.json();
- grid.innerHTML=(d.posts||[]).map(p=>`<a class="card" href="/winner/${encodeURIComponent(p.slug)}">
- <img class="card-image" src="${esc(p.banner_url||'https://placehold.co/900x560/111/DBB95A?text=WINNER')}" alt="${esc(p.title)}" loading="lazy">
- <div class="card-body"><div class="badges">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div><h3>${esc(p.title)}</h3><div class="meta"><span>${esc(p.username)}</span><span>${esc(p.game||"-")}</span><span>${dateFmt(p.published_at||p.created_at)}</span></div><div class="amount">${money(p.amount)}</div></div></a>`).join("");
- empty.classList.toggle("hidden",(d.posts||[]).length>0);
- const pages=Math.max(1,Math.ceil((d.total||0)/(d.limit||CFG.postsPerPage))); pager.innerHTML="";
- if(pages>1){for(let i=1;i<=pages;i++){const b=document.createElement("button");b.className="btn small "+(i===page?"":"secondary");b.textContent=i;b.onclick=()=>{page=i;load();scrollTo({top:document.getElementById("winners").offsetTop-80,behavior:"smooth"})};pager.appendChild(b)}}
-}
-document.getElementById("search").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>{page=1;load()},300)});
-document.getElementById("badge").addEventListener("change",()=>{page=1;load()}); load();
+let page=1,timer;document.getElementById("year").textContent=new Date().getFullYear();const grid=document.getElementById("grid"),empty=document.getElementById("empty"),pager=document.getElementById("pagination");
+async function load(){const q=document.getElementById("search").value.trim(),badge=document.getElementById("badge").value;const u=new URL("/api/posts",location.origin);u.searchParams.set("page",page);u.searchParams.set("limit",CFG.postsPerPage);if(q)u.searchParams.set("q",q);if(badge)u.searchParams.set("badge",badge);try{const r=await fetch(u);const d=await r.json();document.getElementById("statTotal").textContent=Number(d.total||0).toLocaleString("id-ID");grid.innerHTML=(d.posts||[]).map(p=>`<a class="card" href="/winner/${encodeURIComponent(p.slug)}"><div class="card-media"><img class="card-image" src="${esc(p.banner_url||'https://placehold.co/900x560/111/DBB95A?text=WINNER')}" alt="${esc(p.title)}" loading="lazy">${p.badge?`<span class="card-badge ${badgeClass(p.badge)}">${esc(p.badge)}</span>`:""}<div class="verified">✓ DIBUKTIKAN</div></div><div class="win-amount"><small>KEMENANGAN TOTAL</small><strong>${money(p.amount)}</strong></div><div class="card-body"><h3>${esc(p.title)}</h3><div class="member-row"><span class="avatar">♟</span><div><b>${esc(p.username)}</b><small>${esc(p.game||"Game Slot")}</small></div></div><div class="card-foot"><span>${dateFmt(p.published_at||p.created_at)}</span><b>LIHAT BUKTI ›</b></div></div></a>`).join("");empty.classList.toggle("hidden",(d.posts||[]).length>0);const pages=Math.max(1,Math.ceil((d.total||0)/(d.limit||CFG.postsPerPage)));pager.innerHTML="";if(pages>1){for(let i=1;i<=pages;i++){const b=document.createElement("button");b.className="page-btn "+(i===page?"active":"");b.textContent=i;b.onclick=()=>{page=i;load();scrollTo({top:document.getElementById("winners").offsetTop-80,behavior:"smooth"})};pager.appendChild(b)}}}catch(e){empty.classList.remove("hidden");empty.querySelector("b").textContent="GAGAL MEMUAT DATA"}}
+document.getElementById("search").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>{page=1;load()},300)});document.getElementById("badge").addEventListener("change",()=>{page=1;load()});load();
 </script></body></html>
