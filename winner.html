@@ -1,85 +1,855 @@
 <!doctype html>
 <html lang="id">
+
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Detail Kemenangan</title>
-  <link rel="icon" href="" data-favicon>
-  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1">
+
+  <meta
+    name="theme-color"
+    content="#050505">
+
+  <title>
+    Detail Kemenangan
+  </title>
+
+  <link
+    rel="icon"
+    href=""
+    data-favicon>
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/style.css">
+
 </head>
-<body>
+
+
+<body class="public-page detail-page">
+
+
 <header class="header">
+
   <div class="container header-inner">
-    <a href="/"><img class="logo" data-logo alt="Logo"></a>
+
+
+    <a
+      class="brand"
+      href="/">
+
+      <img
+        class="logo"
+        data-logo
+        alt="Logo">
+
+    </a>
+
+
     <nav class="nav">
-      <a class="btn secondary" href="/">← Kembali</a>
-      <a class="btn" href="https://cutt.ly/rtp-totoslotjp" target="_blank" rel="noopener">RTP SLOT GACOR HARI INI</a>
+
+      <a
+        class="btn secondary"
+        href="/">
+
+        ← Kembali
+
+      </a>
+
+
+      <a
+        class="btn"
+        href="https://cutt.ly/rtp-totoslotjp"
+        target="_blank"
+        rel="noopener noreferrer">
+
+        RTP SLOT GACOR HARI INI
+
+      </a>
+
     </nav>
+
+
   </div>
+
 </header>
 
+
+
 <main class="container detail-wrap">
-  <div id="loading" class="empty">Memuat detail kemenangan...</div>
-  <article id="detail" class="detail-card hidden">
-    <div class="detail-image-wrap">
-      <img id="banner" class="detail-image" alt="Bukti kemenangan">
-    </div>
-    <div class="detail-content">
-      <div class="eyebrow">BUKTI KEMENANGAN MEMBER</div>
-      <h1 id="title" class="detail-title"></h1>
-      <div class="detail-amount-label">KEMENANGAN TOTAL</div>
-      <div id="amount" class="detail-amount"></div>
-      <div class="detail-info">
-        <div><span>Member</span><strong id="username"></strong></div>
-        <div><span>Game</span><strong id="game"></strong></div>
-        <div><span>Tanggal</span><strong id="date"></strong></div>
-      </div>
-      <div id="content" class="post-content"></div>
-    </div>
-  </article>
-  <div id="error" class="empty hidden"></div>
+
+
+  <div
+    id="loading"
+    class="empty">
+
+    Memuat detail kemenangan...
+
+  </div>
+
+
+  <div
+    id="detail"
+    class="hidden">
+  </div>
+
+
+  <div
+    id="error"
+    class="empty hidden">
+  </div>
+
+
 </main>
 
-<footer class="footer"><div class="container">© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div></footer>
+
+
+<div
+  id="lightbox"
+  class="image-lightbox">
+
+  <button
+    id="lightboxClose"
+    class="image-lightbox-close">
+
+    ×
+
+  </button>
+
+  <img
+    id="lightboxImage"
+    alt="Preview gambar">
+
+</div>
+
+
+
+<footer class="footer">
+
+  <div class="container footer-inner">
+
+    <img
+      class="footer-logo"
+      data-logo
+      alt="Logo">
+
+    <div>
+
+      © <span id="year"></span>
+
+      <span data-site-name></span>.
+
+      All rights reserved.
+
+    </div>
+
+  </div>
+
+</footer>
+
+
 
 <script src="/config.js"></script>
-<script>
-const CFG=window.SITE_CONFIG||{};
-const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const money=n=>(CFG.currencyPrefix||"Rp")+" "+Number(n||0).toLocaleString("id-ID");
-const fmt=d=>d?new Date(d).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"}):"-";
-document.getElementById("year").textContent=new Date().getFullYear();
-document.querySelectorAll("[data-site-name]").forEach(x=>x.textContent=CFG.siteName||"WINNER MEMBER");
-document.querySelectorAll("[data-logo]").forEach(x=>{if(CFG.logoUrl)x.src=CFG.logoUrl;else x.style.display="none"});
-document.querySelectorAll("[data-favicon]").forEach(x=>{if(CFG.faviconUrl)x.href=CFG.faviconUrl});
-if(CFG.backgroundUrl)document.documentElement.style.setProperty("--site-bg",`url("${CFG.backgroundUrl}")`);
+<script src="/assets/js/site.js"></script>
 
-async function init(){
- const slug=new URLSearchParams(location.search).get("slug");
- const loading=document.getElementById("loading"), detail=document.getElementById("detail"), error=document.getElementById("error");
- if(!slug){loading.classList.add("hidden");error.textContent="Postingan tidak ditemukan.";error.classList.remove("hidden");return;}
- try{
-   const r=await fetch("/api/posts/"+encodeURIComponent(slug),{cache:"no-store"});
-   if(!r.ok)throw new Error("not found");
-   const raw=await r.json();
-   const p=raw.post||raw;
-   document.title=(p.title||"Detail Kemenangan")+" - "+(CFG.siteName||"");
-   const img=p.banner_url||p.image_url||"";
-   const banner=document.getElementById("banner");
-   if(img)banner.src=img;else banner.closest(".detail-image-wrap").style.display="none";
-   document.getElementById("title").textContent=p.title||"Bukti Kemenangan";
-   document.getElementById("amount").textContent=money(p.amount);
-   document.getElementById("username").textContent=p.username||"-";
-   document.getElementById("game").textContent=p.game||"-";
-   document.getElementById("date").textContent=fmt(p.published_at||p.created_at);
-   const content=p.content||p.description||p.body||"";
-   document.getElementById("content").innerHTML=content ? `<p>${esc(content).replace(/\n/g,"<br>")}</p>` : "";
-   loading.classList.add("hidden");detail.classList.remove("hidden");
- }catch(e){
-   loading.classList.add("hidden");error.textContent="Detail postingan tidak ditemukan atau API belum mengembalikan data.";error.classList.remove("hidden");
- }
+<script>
+
+const CFG =
+  window.SITE_CONFIG || {};
+
+
+const esc =
+  s =>
+    String(s ?? "")
+      .replace(
+        /[&<>"']/g,
+        m => ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#39;"
+        }[m])
+      );
+
+
+const money =
+  n =>
+    (CFG.currencyPrefix || "Rp")
+    + " "
+    + Number(n || 0)
+        .toLocaleString("id-ID");
+
+
+const fmt =
+  d =>
+    d
+      ? new Date(d)
+          .toLocaleString(
+            "id-ID",
+            {
+              dateStyle:"long",
+              timeStyle:"short"
+            }
+          )
+      : "-";
+
+
+document
+  .getElementById("year")
+  .textContent =
+    new Date().getFullYear();
+
+
+document
+  .querySelectorAll(
+    "[data-site-name]"
+  )
+  .forEach(
+    x =>
+      x.textContent =
+        CFG.siteName ||
+        "TOTOSLOTJP"
+  );
+
+
+document
+  .querySelectorAll(
+    "[data-logo]"
+  )
+  .forEach(
+    x => {
+
+      if (
+        CFG.logoUrl
+      ) {
+
+        x.src =
+          CFG.logoUrl;
+
+      } else {
+
+        x.style.display =
+          "none";
+
+      }
+
+    }
+  );
+
+
+document
+  .querySelectorAll(
+    "[data-favicon]"
+  )
+  .forEach(
+    x => {
+
+      if (
+        CFG.faviconUrl
+      ) {
+
+        x.href =
+          CFG.faviconUrl;
+
+      }
+
+    }
+  );
+
+
+if (
+  CFG.backgroundUrl
+) {
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--site-bg",
+      `url("${CFG.backgroundUrl}")`
+    );
+
 }
+
+
+function openImage(
+  src
+) {
+
+  const lightbox =
+    document
+      .getElementById(
+        "lightbox"
+      );
+
+
+  document
+    .getElementById(
+      "lightboxImage"
+    )
+    .src =
+      src;
+
+
+  lightbox
+    .classList
+    .add(
+      "open"
+    );
+
+
+  document
+    .body
+    .style
+    .overflow =
+      "hidden";
+
+}
+
+
+function closeImage() {
+
+  document
+    .getElementById(
+      "lightbox"
+    )
+    .classList
+    .remove(
+      "open"
+    );
+
+
+  document
+    .body
+    .style
+    .overflow =
+      "";
+
+}
+
+
+document
+  .getElementById(
+    "lightboxClose"
+  )
+  .onclick =
+    closeImage;
+
+
+document
+  .getElementById(
+    "lightbox"
+  )
+  .addEventListener(
+    "click",
+    e => {
+
+      if (
+        e.target.id ===
+        "lightbox"
+      ) {
+
+        closeImage();
+
+      }
+
+    }
+  );
+
+
+document
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if (
+        e.key ===
+        "Escape"
+      ) {
+
+        closeImage();
+
+      }
+
+    }
+  );
+
+
+function gallerySection(
+  list,
+  title,
+  subtitle
+) {
+
+  if (
+    !list.length
+  ) {
+
+    return "";
+
+  }
+
+
+  return `
+
+    <section
+      class="proof-gallery-section">
+
+
+      <div
+        class="proof-gallery-heading">
+
+        <small>
+          ${esc(subtitle)}
+        </small>
+
+        <h2>
+          ${esc(title)}
+        </h2>
+
+      </div>
+
+
+      <div
+        class="proof-gallery-grid">
+
+        ${
+          list
+            .map(
+              (
+                item,
+                index
+              ) => `
+
+                <button
+                  type="button"
+                  class="proof-gallery-item"
+                  onclick="openImage('${esc(item.image_url)}')">
+
+                  <img
+                    src="${esc(item.image_url)}"
+                    alt="${esc(title)} ${index + 1}"
+                    loading="lazy">
+
+                  <span
+                    class="proof-gallery-caption">
+
+                    Klik untuk perbesar ↗
+
+                  </span>
+
+                </button>
+
+              `
+            )
+            .join("")
+        }
+
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+async function init() {
+
+  const slug =
+    new URLSearchParams(
+      location.search
+    )
+    .get(
+      "slug"
+    );
+
+
+  const loading =
+    document
+      .getElementById(
+        "loading"
+      );
+
+
+  const detail =
+    document
+      .getElementById(
+        "detail"
+      );
+
+
+  const error =
+    document
+      .getElementById(
+        "error"
+      );
+
+
+  if (
+    !slug
+  ) {
+
+    loading
+      .classList
+      .add(
+        "hidden"
+      );
+
+
+    error.textContent =
+      "Postingan tidak ditemukan.";
+
+
+    error
+      .classList
+      .remove(
+        "hidden"
+      );
+
+
+    return;
+
+  }
+
+
+  try {
+
+
+    const r =
+      await fetch(
+        "/api/posts/"
+        +
+        encodeURIComponent(
+          slug
+        ),
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if (
+      !r.ok
+    ) {
+
+      throw new Error(
+        "not found"
+      );
+
+    }
+
+
+    const raw =
+      await r.json();
+
+
+    const p =
+      raw.post ||
+      raw;
+
+
+    document.title =
+      (
+        p.title ||
+        "Detail Kemenangan"
+      )
+      +
+      " - "
+      +
+      (
+        CFG.siteName ||
+        "TOTOSLOTJP"
+      );
+
+
+    const media =
+      Array.isArray(
+        p.media
+      )
+        ? p.media
+        : [];
+
+
+    const winProof =
+      media.filter(
+        x =>
+          x.media_type ===
+          "win_proof"
+      );
+
+
+    const transferProof =
+      media.filter(
+        x =>
+          x.media_type ===
+          "transfer_proof"
+      );
+
+
+    const description =
+      p.description ||
+      p.content ||
+      p.body ||
+      "";
+
+
+    detail.innerHTML = `
+
+      <article
+        class="winner-detail-shell">
+
+
+        ${
+          p.banner_url
+          ? `
+
+            <div
+              class="winner-main-banner">
+
+              <button
+                type="button"
+                onclick="openImage('${esc(p.banner_url)}')">
+
+                <img
+                  src="${esc(p.banner_url)}"
+                  alt="${esc(p.title || "Banner kemenangan")}">
+
+              </button>
+
+            </div>
+
+          `
+          : ""
+        }
+
+
+        <div
+          class="winner-detail-content">
+
+
+          <div
+            class="winner-detail-eyebrow">
+
+            BUKTI KEMENANGAN MEMBER
+
+          </div>
+
+
+          <h1
+            class="winner-detail-title">
+
+            ${esc(
+              p.title ||
+              "Bukti Kemenangan"
+            )}
+
+          </h1>
+
+
+          <div
+            class="winner-detail-amount-label">
+
+            KEMENANGAN TOTAL
+
+          </div>
+
+
+          <div
+            class="winner-detail-amount">
+
+            ${money(
+              p.amount
+            )}
+
+          </div>
+
+
+          <div
+            class="winner-info-grid">
+
+
+            <div
+              class="winner-info-box">
+
+              <span>
+                MEMBER
+              </span>
+
+              <strong>
+                ${esc(
+                  p.username ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div
+              class="winner-info-box">
+
+              <span>
+                GAME / PROVIDER
+              </span>
+
+              <strong>
+                ${esc(
+                  p.game ||
+                  "-"
+                )}
+              </strong>
+
+            </div>
+
+
+            <div
+              class="winner-info-box">
+
+              <span>
+                TANGGAL
+              </span>
+
+              <strong>
+                ${
+                  fmt(
+                    p.published_at ||
+                    p.created_at
+                  )
+                }
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          ${
+            description
+            ? `
+
+              <div
+                class="winner-description">
+
+                ${
+                  esc(
+                    description
+                  )
+                  .replace(
+                    /\n/g,
+                    "<br>"
+                  )
+                }
+
+              </div>
+
+            `
+            : ""
+          }
+
+
+        </div>
+
+
+      </article>
+
+
+      ${
+        gallerySection(
+          winProof,
+          "Bukti Kemenangan",
+          "SCREENSHOT KEMENANGAN MEMBER"
+        )
+      }
+
+
+      ${
+        gallerySection(
+          transferProof,
+          "Bukti Transfer",
+          "BUKTI PEMBAYARAN MEMBER"
+        )
+      }
+
+
+      <div
+        class="winner-bottom-actions">
+
+
+        <a
+          class="btn secondary"
+          href="/">
+
+          ← Kembali ke Galeri
+
+        </a>
+
+
+        <a
+          class="btn"
+          href="https://cutt.ly/rtp-totoslotjp"
+          target="_blank"
+          rel="noopener noreferrer">
+
+          RTP SLOT GACOR HARI INI
+
+        </a>
+
+
+      </div>
+
+    `;
+
+
+    loading
+      .classList
+      .add(
+        "hidden"
+      );
+
+
+    detail
+      .classList
+      .remove(
+        "hidden"
+      );
+
+
+  } catch (e) {
+
+
+    loading
+      .classList
+      .add(
+        "hidden"
+      );
+
+
+    error.textContent =
+      "Detail postingan tidak ditemukan.";
+
+
+    error
+      .classList
+      .remove(
+        "hidden"
+      );
+
+
+  }
+
+}
+
+
 init();
+
 </script>
+
 </body>
+
 </html>

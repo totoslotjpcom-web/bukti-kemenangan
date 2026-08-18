@@ -3,98 +3,584 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050505">
   <title>Winner Member</title>
   <link rel="icon" href="" data-favicon>
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+
+<body class="public-page">
+
 <header class="header">
   <div class="container header-inner">
-    <img class="logo" data-logo alt="Logo">
+
+    <a class="brand" href="/">
+      <img class="logo" data-logo alt="Logo">
+    </a>
+
     <nav class="nav">
-      <a class="btn secondary" href="/">Beranda</a>
-      <a class="btn" href="https://cutt.ly/rtp-totoslotjp" target="_blank" rel="noopener">RTP SLOT GACOR HARI INI</a>
+
+      <a class="btn secondary" href="/">
+        Beranda
+      </a>
+
+      <a
+        class="btn"
+        href="https://cutt.ly/rtp-totoslotjp"
+        target="_blank"
+        rel="noopener noreferrer">
+        RTP SLOT GACOR HARI INI
+      </a>
+
     </nav>
+
   </div>
 </header>
 
+
 <main>
+
   <section class="hero">
+
     <div class="container hero-inner">
-      <div class="eyebrow">GALERI RESMI MEMBER</div>
-      <h1 data-site-name>WINNER MEMBER</h1>
-      <p data-tagline>Galeri Bukti Kemenangan Member</p>
+
+      <div class="eyebrow">
+        GALERI RESMI MEMBER
+      </div>
+
+      <h1>
+        BUKTI KEMENANGAN
+      </h1>
+
+      <h2>
+        TOTOSLOTJP
+      </h2>
+
+      <p data-tagline>
+        Galeri Bukti Kemenangan Member
+      </p>
+
     </div>
+
   </section>
 
-  <section class="container winners" id="winners">
+
+  <section
+    class="container winners"
+    id="winners">
+
     <div class="toolbar">
-      <input id="search" class="input" placeholder="Cari username, game, atau judul...">
-      <a class="btn rtp-button" href="https://cutt.ly/rtp-totoslotjp" target="_blank" rel="noopener">RTP SLOT GACOR HARI INI</a>
+
+      <div class="search-wrap">
+
+        <span>⌕</span>
+
+        <input
+          id="search"
+          class="input"
+          placeholder="Cari username, game, atau judul...">
+
+      </div>
+
+      <a
+        class="rtp-main-btn"
+        href="https://cutt.ly/rtp-totoslotjp"
+        target="_blank"
+        rel="noopener noreferrer">
+        ⚡ RTP SLOT GACOR HARI INI
+      </a>
+
     </div>
-    <div id="grid" class="grid"></div>
-    <div id="empty" class="empty hidden">Belum ada posting kemenangan.</div>
-    <div id="pagination" class="pagination"></div>
+
+
+    <div
+      id="grid"
+      class="winner-grid">
+    </div>
+
+
+    <div
+      id="empty"
+      class="empty hidden">
+      Belum ada posting kemenangan.
+    </div>
+
+
+    <div
+      id="pagination"
+      class="pagination">
+    </div>
+
   </section>
+
 </main>
 
-<footer class="footer"><div class="container">© <span id="year"></span> <span data-site-name></span>. All rights reserved.</div></footer>
+
+<footer class="footer">
+
+  <div class="container footer-inner">
+
+    <img
+      class="footer-logo"
+      data-logo
+      alt="Logo">
+
+    <div>
+      © <span id="year"></span>
+      <span data-site-name></span>.
+      All rights reserved.
+    </div>
+
+  </div>
+
+</footer>
+
 
 <script src="/config.js"></script>
+<script src="/assets/js/site.js"></script>
+
 <script>
-const CFG = window.SITE_CONFIG || {};
-const esc = s => String(s ?? "").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const money = n => (CFG.currencyPrefix || "Rp") + " " + Number(n || 0).toLocaleString("id-ID");
-const fmt = d => d ? new Date(d).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"}) : "";
-document.getElementById("year").textContent = new Date().getFullYear();
-document.querySelectorAll("[data-site-name]").forEach(x=>x.textContent=CFG.siteName||"WINNER MEMBER");
-document.querySelectorAll("[data-tagline]").forEach(x=>x.textContent=CFG.tagline||"Galeri Bukti Kemenangan Member");
-document.querySelectorAll("[data-logo]").forEach(x=>{ if(CFG.logoUrl)x.src=CFG.logoUrl; else x.style.display="none"; });
-document.querySelectorAll("[data-favicon]").forEach(x=>{ if(CFG.faviconUrl)x.href=CFG.faviconUrl; });
-if(CFG.backgroundUrl) document.documentElement.style.setProperty("--site-bg",`url("${CFG.backgroundUrl}")`);
 
-let page=1, timer;
-const grid=document.getElementById("grid"), empty=document.getElementById("empty"), pager=document.getElementById("pagination");
+const CFG =
+  window.SITE_CONFIG || {};
 
-async function load(){
-  const q=document.getElementById("search").value.trim();
-  const u=new URL("/api/posts",location.origin);
-  u.searchParams.set("page",page);
-  u.searchParams.set("limit",CFG.postsPerPage||12);
-  if(q)u.searchParams.set("q",q);
-  try{
-    const r=await fetch(u,{cache:"no-store"});
-    const d=await r.json();
-    const posts=d.posts||[];
-    grid.innerHTML=posts.map(p=>`
-      <article class="card">
-        <a class="card-image-link" href="/winner.html?slug=${encodeURIComponent(p.slug)}">
-          <img class="card-image" src="${esc(p.banner_url||p.image_url||"")}" alt="${esc(p.title||"Bukti kemenangan")}" loading="lazy">
-        </a>
-        <div class="card-body">
-          <div class="card-label">KEMENANGAN TOTAL</div>
-          <div class="card-amount">${money(p.amount)}</div>
-          <h2 class="card-title">${esc(p.title||"Bukti Kemenangan")}</h2>
-          <div class="card-meta"><strong>${esc(p.username||"-")}</strong><span>${esc(p.game||"-")}</span></div>
-          <div class="card-footer">
-            <span>${fmt(p.published_at||p.created_at)}</span>
-            <a class="detail-link" href="/winner.html?slug=${encodeURIComponent(p.slug)}">LIHAT DETAIL ›</a>
-          </div>
-        </div>
-      </article>`).join("");
-    empty.classList.toggle("hidden",posts.length>0);
-    const total=Number(d.total||posts.length), limit=Number(CFG.postsPerPage||12), pages=Math.max(1,Math.ceil(total/limit));
-    pager.innerHTML="";
-    if(pages>1) for(let i=1;i<=pages;i++){
-      const b=document.createElement("button"); b.className="btn small "+(i===page?"":"secondary"); b.textContent=i;
-      b.onclick=()=>{page=i;load();scrollTo({top:document.getElementById("winners").offsetTop-80,behavior:"smooth"});}; pager.appendChild(b);
+const esc =
+  s =>
+    String(s ?? "")
+      .replace(
+        /[&<>"']/g,
+        m => ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#39;"
+        }[m])
+      );
+
+const money =
+  n =>
+    (CFG.currencyPrefix || "Rp")
+    + " "
+    + Number(n || 0)
+        .toLocaleString("id-ID");
+
+const fmt =
+  d =>
+    d
+      ? new Date(d)
+          .toLocaleString(
+            "id-ID",
+            {
+              dateStyle:"medium",
+              timeStyle:"short"
+            }
+          )
+      : "";
+
+
+document
+  .getElementById("year")
+  .textContent =
+    new Date().getFullYear();
+
+
+document
+  .querySelectorAll(
+    "[data-site-name]"
+  )
+  .forEach(
+    x =>
+      x.textContent =
+        CFG.siteName ||
+        "TOTOSLOTJP"
+  );
+
+
+document
+  .querySelectorAll(
+    "[data-tagline]"
+  )
+  .forEach(
+    x =>
+      x.textContent =
+        CFG.tagline ||
+        "Galeri Bukti Kemenangan Member"
+  );
+
+
+document
+  .querySelectorAll(
+    "[data-logo]"
+  )
+  .forEach(
+    x => {
+
+      if (
+        CFG.logoUrl
+      ) {
+
+        x.src =
+          CFG.logoUrl;
+
+      } else {
+
+        x.style.display =
+          "none";
+
+      }
+
     }
-  }catch(e){
-    grid.innerHTML=""; empty.textContent="Gagal memuat posting."; empty.classList.remove("hidden");
-  }
+  );
+
+
+document
+  .querySelectorAll(
+    "[data-favicon]"
+  )
+  .forEach(
+    x => {
+
+      if (
+        CFG.faviconUrl
+      ) {
+
+        x.href =
+          CFG.faviconUrl;
+
+      }
+
+    }
+  );
+
+
+if (
+  CFG.backgroundUrl
+) {
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--site-bg",
+      `url("${CFG.backgroundUrl}")`
+    );
+
 }
-document.getElementById("search").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>{page=1;load()},300)});
+
+
+let page = 1;
+let timer;
+
+const grid =
+  document.getElementById("grid");
+
+const empty =
+  document.getElementById("empty");
+
+const pager =
+  document.getElementById("pagination");
+
+
+async function load() {
+
+  const q =
+    document
+      .getElementById("search")
+      .value
+      .trim();
+
+
+  const u =
+    new URL(
+      "/api/posts",
+      location.origin
+    );
+
+
+  u.searchParams.set(
+    "page",
+    page
+  );
+
+  u.searchParams.set(
+    "limit",
+    CFG.postsPerPage || 12
+  );
+
+
+  if (q) {
+
+    u.searchParams.set(
+      "q",
+      q
+    );
+
+  }
+
+
+  try {
+
+    const r =
+      await fetch(
+        u,
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    const d =
+      await r.json();
+
+
+    const posts =
+      d.posts || [];
+
+
+    grid.innerHTML =
+      posts
+        .map(
+          p => `
+
+            <article class="winner-card">
+
+              <a
+                class="winner-card-media"
+                href="/winner.html?slug=${encodeURIComponent(p.slug)}">
+
+                <img
+                  src="${esc(p.banner_url || "")}"
+                  alt="${esc(p.title || "Bukti kemenangan")}"
+                  loading="lazy">
+
+              </a>
+
+
+              <div class="winner-card-body">
+
+                <div class="winner-card-kicker">
+                  KEMENANGAN TOTAL
+                </div>
+
+
+                <div class="winner-card-amount">
+                  ${money(p.amount)}
+                </div>
+
+
+                <h2 class="winner-card-title">
+                  ${esc(
+                    p.title ||
+                    "Bukti Kemenangan"
+                  )}
+                </h2>
+
+
+                <div class="winner-card-info">
+
+                  <strong>
+                    ${esc(
+                      p.username ||
+                      "-"
+                    )}
+                  </strong>
+
+                  <span>
+                    ${esc(
+                      p.game ||
+                      "-"
+                    )}
+                  </span>
+
+                </div>
+
+
+                <span class="winner-card-date">
+
+                  ${
+                    fmt(
+                      p.published_at ||
+                      p.created_at
+                    )
+                  }
+
+                </span>
+
+
+                <a
+                  class="winner-detail-button"
+                  href="/winner.html?slug=${encodeURIComponent(p.slug)}">
+
+                  LIHAT DETAIL
+
+                  <span>›</span>
+
+                </a>
+
+              </div>
+
+            </article>
+
+          `
+        )
+        .join("");
+
+
+    empty
+      .classList
+      .toggle(
+        "hidden",
+        posts.length > 0
+      );
+
+
+    const total =
+      Number(
+        d.total ||
+        posts.length
+      );
+
+
+    const limit =
+      Number(
+        CFG.postsPerPage ||
+        12
+      );
+
+
+    const pages =
+      Math.max(
+        1,
+        Math.ceil(
+          total /
+          limit
+        )
+      );
+
+
+    pager.innerHTML =
+      "";
+
+
+    if (
+      pages > 1
+    ) {
+
+      for (
+        let i = 1;
+        i <= pages;
+        i++
+      ) {
+
+        const b =
+          document
+            .createElement(
+              "button"
+            );
+
+
+        b.className =
+          "page-btn "
+          +
+          (
+            i === page
+              ? "active"
+              : ""
+          );
+
+
+        b.textContent =
+          i;
+
+
+        b.onclick =
+          () => {
+
+            page = i;
+
+            load();
+
+            scrollTo({
+              top:
+                document
+                  .getElementById(
+                    "winners"
+                  )
+                  .offsetTop
+                -
+                80,
+
+              behavior:
+                "smooth"
+            });
+
+          };
+
+
+        pager
+          .appendChild(
+            b
+          );
+
+      }
+
+    }
+
+
+  } catch (e) {
+
+
+    grid.innerHTML =
+      "";
+
+
+    empty.textContent =
+      "Gagal memuat posting.";
+
+
+    empty
+      .classList
+      .remove(
+        "hidden"
+      );
+
+
+  }
+
+}
+
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    () => {
+
+      clearTimeout(
+        timer
+      );
+
+
+      timer =
+        setTimeout(
+          () => {
+
+            page = 1;
+
+            load();
+
+          },
+          300
+        );
+
+    }
+  );
+
+
 load();
+
 </script>
+
 </body>
 </html>
